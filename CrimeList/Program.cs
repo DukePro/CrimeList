@@ -5,13 +5,69 @@
         static void Main()
         {
             Menu menu = new Menu();
-            menu.ShowMainMenu();
+            menu.Run();
+            
         }
     }
 
     class Menu
     {
+        private const string ShowAllCommand = "1";
+        private const string HeightFindCommand = "2";
+        private const string WeightFindCommand = "3";
+        private const string NationalityFindCommand = "4";
+        private const string Exit = "0";
 
+        public void Run()
+        {
+            string userInput;
+            bool isExit = false;
+            int menuPositionY = 0;
+
+            DataBase dataBase = new DataBase();
+            dataBase.CreateCriminals();
+            
+
+            while (isExit == false)
+            {
+                Console.WriteLine(ShowAllCommand + " - Показать всех");
+                Console.WriteLine(HeightFindCommand + " - Поиск по росту");
+                Console.WriteLine(WeightFindCommand + " - Поиск по весу");
+                Console.WriteLine(NationalityFindCommand + " - Поиск по национальности");
+                Console.WriteLine(Exit + " - Выход\n");
+
+                userInput = Console.ReadLine();
+
+                switch (userInput)
+                {
+                    case ShowAllCommand:
+                        dataBase.ShowAllCriminals();
+                        break;
+
+                    case HeightFindCommand:
+                        //service.CreateClients(_clientsToCreate);
+                        break;
+
+                    case WeightFindCommand:
+                        //_service.StorageMenu();
+                        break;
+
+                    case NationalityFindCommand:
+                        //_service.StorageMenu();
+                        break;
+
+                    case Exit:
+                        isExit = true;
+                        break;
+                }
+            }
+        }
+
+        // - Всех посмотреть
+        // - Поиск по росту
+        // - Поиск по весу
+        // - Поиск по национальности
+        // - Выход
     }
 
     class Criminal
@@ -156,7 +212,7 @@
         {
             bool isImprisoned = false;
 
-            if (Utils.GetRandomNumber(1) == 1)
+            if (Utils.GetRandomNumber(2) == 1)
             {
                 isImprisoned = true;
             }
@@ -189,7 +245,7 @@
             }
         }
 
-        private void CreateCriminals()
+        public void CreateCriminals()
         {
             for (int i = 0; i < ammountOfRecords; i++)
             {
@@ -210,13 +266,10 @@
         public static int GetRandomNumber(int maxValue)
         {
             return s_random.Next(maxValue);
-
         }
-
     }
 }
     
-
 //У нас есть список всех преступников.
 //В преступнике есть поля: ФИО, заключен ли он под стражу, рост, вес, национальность.
 //Вашей программой будут пользоваться детективы.
