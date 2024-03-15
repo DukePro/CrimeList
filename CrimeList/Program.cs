@@ -1,4 +1,6 @@
-﻿namespace Criminals
+﻿using System.Linq;
+
+namespace Criminals
 {
     class Programm
     {
@@ -6,7 +8,6 @@
         {
             Menu menu = new Menu();
             menu.Run();
-            
         }
     }
 
@@ -22,14 +23,13 @@
         {
             string userInput;
             bool isExit = false;
-            int menuPositionY = 0;
 
             DataBase dataBase = new DataBase();
             dataBase.CreateCriminals();
             
-
             while (isExit == false)
             {
+                Console.WriteLine();
                 Console.WriteLine(ShowAllCommand + " - Показать всех");
                 Console.WriteLine(HeightFindCommand + " - Поиск по росту");
                 Console.WriteLine(WeightFindCommand + " - Поиск по весу");
@@ -45,15 +45,15 @@
                         break;
 
                     case HeightFindCommand:
-                        //service.CreateClients(_clientsToCreate);
+                        dataBase.ShowByHeight();
                         break;
 
                     case WeightFindCommand:
-                        //_service.StorageMenu();
+                        dataBase.ShowByWeight();
                         break;
 
                     case NationalityFindCommand:
-                        //_service.StorageMenu();
+                        dataBase.ShowByNationality();
                         break;
 
                     case Exit:
@@ -62,12 +62,6 @@
                 }
             }
         }
-
-        // - Всех посмотреть
-        // - Поиск по росту
-        // - Поиск по весу
-        // - Поиск по национальности
-        // - Выход
     }
 
     class Criminal
@@ -245,12 +239,81 @@
             }
         }
 
+        public void ShowByHeight()
+        {
+            Console.WriteLine("Введите рост:");
+
+            int height = UserInput();
+
+            var criminals = from Criminal criminal in _criminals where criminal.Height == height && criminal.isImprisoned == false select criminal;
+
+            if (criminals.Count() == 0)
+            {
+                Console.WriteLine("Ничего не найдено");
+            }
+
+            foreach (var criminal in criminals)
+            {
+                Console.WriteLine($"{criminal.Name}, {criminal.Nationality}, Рост {criminal.Height}, Вес {criminal.Weight}");
+            }
+        }
+
+        public void ShowByWeight()
+        {
+            Console.WriteLine("Введите вес:");
+
+            int weight = UserInput();
+
+            var criminals = from Criminal criminal in _criminals where criminal.Weight == weight && criminal.isImprisoned == false select criminal;
+
+            if (criminals.Count() == 0)
+            {
+                Console.WriteLine("Ничего не найдено");
+            }
+
+            foreach (var criminal in criminals)
+            {
+                Console.WriteLine($"{criminal.Name}, {criminal.Nationality}, Рост {criminal.Height}, Вес {criminal.Weight}");
+            }
+        }
+
+        public void ShowByNationality()
+        {
+            Console.WriteLine("Введите национальность:");
+
+            string nation = Console.ReadLine();
+
+            var criminals = from Criminal criminal in _criminals where criminal.Nationality.ToLower() == nation.ToLower() && criminal.isImprisoned == false select criminal;
+
+            if (criminals.Count() == 0)
+            {
+                Console.WriteLine("Ничего не найдено");
+            }
+
+            foreach (var criminal in criminals)
+            {
+                Console.WriteLine($"{criminal.Name}, {criminal.Nationality}, Рост {criminal.Height}, Вес {criminal.Weight}");
+            }
+        }
+
         public void CreateCriminals()
         {
             for (int i = 0; i < ammountOfRecords; i++)
             {
                 _criminals.Add(new Criminal());
             }
+        }
+
+        private int UserInput()
+        {
+            int input;
+
+            if (!int.TryParse(Console.ReadLine(), out input))
+            {
+                Console.WriteLine("Некорректные данные");
+            }
+
+            return input;
         }
     }
 
