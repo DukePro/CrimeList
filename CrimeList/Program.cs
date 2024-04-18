@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Design;
-using System.Linq;
+﻿using System.Linq;
 using static System.Console;
 
 namespace Criminals
@@ -34,7 +33,7 @@ namespace Criminals
                 WriteLine(FindCriminalCommand + " - Поиск преступника по параметрам");
                 WriteLine(Exit + " - Выход\n");
 
-                userInput = Console.ReadLine();
+                userInput = ReadLine();
 
                 switch (userInput)
                 {
@@ -305,25 +304,6 @@ namespace Criminals
             return nation;
         }
 
-        private void FindByNationality()
-        {
-            WriteLine("Введите национальность:");
-
-            string nation = Console.ReadLine();
-
-            var criminals = from Criminal criminal in _criminals where criminal.Nationality.ToLower() == nation.ToLower() && criminal.isImprisoned == false select criminal;
-
-            if (criminals.Count() == 0)
-            {
-                WriteLine("Ничего не найдено");
-            }
-
-            foreach (var criminal in criminals)
-            {
-                WriteLine($"{criminal.Name}, {criminal.Nationality}, Рост {criminal.Height}, Вес {criminal.Weight}");
-            }
-        }
-
         private int UserInput()
         {
             int input;
@@ -331,7 +311,6 @@ namespace Criminals
             if (int.TryParse(Console.ReadLine(), out input) == false)
             {
                 WriteLine("Некорректные данные");
-                //input = 0;
             }
 
             return input;
