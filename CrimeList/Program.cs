@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using static System.Console;
 
 namespace Criminals
 {
@@ -14,9 +15,7 @@ namespace Criminals
     class Menu
     {
         private const string ShowAllCommand = "1";
-        private const string HeightFindCommand = "2";
-        private const string WeightFindCommand = "3";
-        private const string NationalityFindCommand = "4";
+        private const string FindCriminalCommand = "2";
         private const string Exit = "0";
 
         public void Run()
@@ -29,12 +28,10 @@ namespace Criminals
             
             while (isExit == false)
             {
-                Console.WriteLine();
-                Console.WriteLine(ShowAllCommand + " - Показать всех");
-                Console.WriteLine(HeightFindCommand + " - Поиск по росту");
-                Console.WriteLine(WeightFindCommand + " - Поиск по весу");
-                Console.WriteLine(NationalityFindCommand + " - Поиск по национальности");
-                Console.WriteLine(Exit + " - Выход\n");
+                WriteLine();
+                WriteLine(ShowAllCommand + " - Показать всех");
+                WriteLine(FindCriminalCommand + " - Поиск преступника по параметрам");
+                WriteLine(Exit + " - Выход\n");
 
                 userInput = Console.ReadLine();
 
@@ -44,18 +41,10 @@ namespace Criminals
                         dataBase.ShowAllCriminals();
                         break;
 
-                    case HeightFindCommand:
-                        dataBase.ShowByHeight();
+                    case FindCriminalCommand:
+                        dataBase.FindCriminals();
                         break;
-
-                    case WeightFindCommand:
-                        dataBase.ShowByWeight();
-                        break;
-
-                    case NationalityFindCommand:
-                        dataBase.ShowByNationality();
-                        break;
-
+                    
                     case Exit:
                         isExit = true;
                         break;
@@ -235,64 +224,7 @@ namespace Criminals
                     imprisonmentStatus = "На свободе";
                 }
 
-                Console.WriteLine($"{_criminals[i].Name}, {_criminals[i].Nationality}, Рост {_criminals[i].Height}, Вес {_criminals[i].Weight}, {imprisonmentStatus}");
-            }
-        }
-
-        public void ShowByHeight()
-        {
-            Console.WriteLine("Введите рост:");
-
-            int height = UserInput();
-
-            var criminals = from Criminal criminal in _criminals where criminal.Height == height && criminal.isImprisoned == false select criminal;
-
-            if (criminals.Count() == 0)
-            {
-                Console.WriteLine("Ничего не найдено");
-            }
-
-            foreach (var criminal in criminals)
-            {
-                Console.WriteLine($"{criminal.Name}, {criminal.Nationality}, Рост {criminal.Height}, Вес {criminal.Weight}");
-            }
-        }
-
-        public void ShowByWeight()
-        {
-            Console.WriteLine("Введите вес:");
-
-            int weight = UserInput();
-
-            var criminals = from Criminal criminal in _criminals where criminal.Weight == weight && criminal.isImprisoned == false select criminal;
-
-            if (criminals.Count() == 0)
-            {
-                Console.WriteLine("Ничего не найдено");
-            }
-
-            foreach (var criminal in criminals)
-            {
-                Console.WriteLine($"{criminal.Name}, {criminal.Nationality}, Рост {criminal.Height}, Вес {criminal.Weight}");
-            }
-        }
-
-        public void ShowByNationality()
-        {
-            Console.WriteLine("Введите национальность:");
-
-            string nation = Console.ReadLine();
-
-            var criminals = from Criminal criminal in _criminals where criminal.Nationality.ToLower() == nation.ToLower() && criminal.isImprisoned == false select criminal;
-
-            if (criminals.Count() == 0)
-            {
-                Console.WriteLine("Ничего не найдено");
-            }
-
-            foreach (var criminal in criminals)
-            {
-                Console.WriteLine($"{criminal.Name}, {criminal.Nationality}, Рост {criminal.Height}, Вес {criminal.Weight}");
+                WriteLine($"{_criminals[i].Name}, {_criminals[i].Nationality}, Рост {_criminals[i].Height}, Вес {_criminals[i].Weight}, {imprisonmentStatus}");
             }
         }
 
@@ -304,13 +236,84 @@ namespace Criminals
             }
         }
 
+        public void FindCriminals()
+        {
+            WriteLine("Поиск по параметрам. Введите хотя-бы один параметр для поиска (Обязательно).\n Остальные параметры можно оставить пустыми (если для них нет данных)");
+
+
+        }
+
+        private List<Criminal> FindByHeight()
+        {
+            int height = UserInput();
+            List<Criminal > criminalsByHeight = new List<Criminal>();
+            
+            WriteLine("Введите рост:");
+            
+            var criminals = from Criminal criminal in _criminals where criminal.Height == height && criminal.isImprisoned == false select criminal;
+
+            if (criminals.Count() == 0)
+            {
+                WriteLine("Ничего не найдено");
+            }
+            else
+            {
+
+            }
+
+            //foreach (var criminal in criminals)
+            //{
+            //    WriteLine($"{criminal.Name}, {criminal.Nationality}, Рост {criminal.Height}, Вес {criminal.Weight}");
+            //}
+
+            return criminals;
+        }
+
+        private void FindByWeight()
+        {
+            WriteLine("Введите вес:");
+
+            int weight = UserInput();
+
+            var criminals = from Criminal criminal in _criminals where criminal.Weight == weight && criminal.isImprisoned == false select criminal;
+
+            if (criminals.Count() == 0)
+            {
+                WriteLine("Ничего не найдено");
+            }
+
+            foreach (var criminal in criminals)
+            {
+                WriteLine($"{criminal.Name}, {criminal.Nationality}, Рост {criminal.Height}, Вес {criminal.Weight}");
+            }
+        }
+
+        private void FindByNationality()
+        {
+            WriteLine("Введите национальность:");
+
+            string nation = Console.ReadLine();
+
+            var criminals = from Criminal criminal in _criminals where criminal.Nationality.ToLower() == nation.ToLower() && criminal.isImprisoned == false select criminal;
+
+            if (criminals.Count() == 0)
+            {
+                WriteLine("Ничего не найдено");
+            }
+
+            foreach (var criminal in criminals)
+            {
+                WriteLine($"{criminal.Name}, {criminal.Nationality}, Рост {criminal.Height}, Вес {criminal.Weight}");
+            }
+        }
+
         private int UserInput()
         {
             int input;
 
             if (!int.TryParse(Console.ReadLine(), out input))
             {
-                Console.WriteLine("Некорректные данные");
+                WriteLine("Некорректные данные");
             }
 
             return input;
