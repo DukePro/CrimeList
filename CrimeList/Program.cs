@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.ComponentModel.Design;
+using System.Linq;
 using static System.Console;
 
 namespace Criminals
@@ -25,7 +26,7 @@ namespace Criminals
 
             DataBase dataBase = new DataBase();
             dataBase.CreateCriminals();
-            
+
             while (isExit == false)
             {
                 WriteLine();
@@ -44,7 +45,7 @@ namespace Criminals
                     case FindCriminalCommand:
                         dataBase.FindCriminals();
                         break;
-                    
+
                     case Exit:
                         isExit = true;
                         break;
@@ -240,52 +241,68 @@ namespace Criminals
         {
             WriteLine("Поиск по параметрам. Введите хотя-бы один параметр для поиска (Обязательно).\n Остальные параметры можно оставить пустыми (если для них нет данных)");
 
+            int height = GetHeight();
+            int weight = GetWeight();
+            string nation = GetNationality();
+            bool filterFlag = false;
 
-        }
+            var filteredCriminals = from Criminal criminal in _criminals
+                                    where criminal.isImprisoned == false
+                                    select criminal;
 
-        private List<Criminal> FindByHeight()
-        {
-            int height = UserInput();
-            List<Criminal > criminalsByHeight = new List<Criminal>();
-            
-            WriteLine("Введите рост:");
-            
-            var criminals = from Criminal criminal in _criminals where criminal.Height == height && criminal.isImprisoned == false select criminal;
-
-            if (criminals.Count() == 0)
+            if (height != 0) 
             {
-                WriteLine("Ничего не найдено");
+                filteredCriminals = filteredCriminals.Where(criminal => criminal.Height == height);
+                filterFlag = true;
+            }
+            if (weight != 0)
+            {
+                filteredCriminals = filteredCriminals.Where(criminal => criminal.Weight == weight);
+                filterFlag = true;
+            }
+            if (string.IsNullOrEmpty(nation) == false)
+            {
+                filteredCriminals = filteredCriminals.Where(criminal => criminal.Nationality.ToLower() == nation.ToLower());
+                filterFlag = true;
+            }
+
+            WriteLine("\nРезультат запроса:");
+            
+            if (filterFlag == true && filteredCriminals.Any())
+            {
+                foreach (var criminal in filteredCriminals)
+                {
+                        WriteLine($"{criminal.Name}, {criminal.Nationality}, Рост {criminal.Height}, Вес {criminal.Weight}");
+                }
             }
             else
             {
-
-            }
-
-            //foreach (var criminal in criminals)
-            //{
-            //    WriteLine($"{criminal.Name}, {criminal.Nationality}, Рост {criminal.Height}, Вес {criminal.Weight}");
-            //}
-
-            return criminals;
-        }
-
-        private void FindByWeight()
-        {
-            WriteLine("Введите вес:");
-
-            int weight = UserInput();
-
-            var criminals = from Criminal criminal in _criminals where criminal.Weight == weight && criminal.isImprisoned == false select criminal;
-
-            if (criminals.Count() == 0)
-            {
                 WriteLine("Ничего не найдено");
             }
+        }
 
-            foreach (var criminal in criminals)
-            {
-                WriteLine($"{criminal.Name}, {criminal.Nationality}, Рост {criminal.Height}, Вес {criminal.Weight}");
-            }
+        private int GetHeight()
+        {
+            WriteLine("\nВведите рост:");
+            int height = UserInput();
+
+            return height;
+        }
+
+        private int GetWeight()
+        {
+            WriteLine("\nВведите вес:");
+            int weight = UserInput();
+
+            return weight;
+        }
+
+        private string GetNationality()
+        {
+            WriteLine("\nВведите национальность:");
+            string nation = ReadLine();
+
+            return nation;
         }
 
         private void FindByNationality()
@@ -311,9 +328,10 @@ namespace Criminals
         {
             int input;
 
-            if (!int.TryParse(Console.ReadLine(), out input))
+            if (int.TryParse(Console.ReadLine(), out input) == false)
             {
                 WriteLine("Некорректные данные");
+                //input = 0;
             }
 
             return input;
@@ -335,7 +353,7 @@ namespace Criminals
         }
     }
 }
-    
+
 //У нас есть список всех преступников.
 //В преступнике есть поля: ФИО, заключен ли он под стражу, рост, вес, национальность.
 //Вашей программой будут пользоваться детективы.
