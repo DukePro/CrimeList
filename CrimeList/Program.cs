@@ -23,8 +23,8 @@ namespace Criminals
             string userInput;
             bool isExit = false;
 
-            DataBase dataBase = new DataBase();
-            dataBase.CreateCriminals();
+            Database database = new Database();
+            database.CreateCriminals();
 
             while (isExit == false)
             {
@@ -38,11 +38,11 @@ namespace Criminals
                 switch (userInput)
                 {
                     case ShowAllCommand:
-                        dataBase.ShowAllCriminals();
+                        database.ShowAllCriminals();
                         break;
 
                     case FindCriminalCommand:
-                        dataBase.FindCriminals();
+                        database.FindCriminals();
                         break;
 
                     case Exit:
@@ -204,7 +204,7 @@ namespace Criminals
         }
     }
 
-    class DataBase
+    class Database
     {
         private int ammountOfRecords = 20;
         private List<Criminal> _criminals = new List<Criminal>();
