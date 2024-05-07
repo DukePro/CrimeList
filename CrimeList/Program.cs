@@ -244,37 +244,21 @@ namespace CrimeList
             int weight = GetWeight();
             string nation = GetNationality();
 
-            IEnumerable<Criminal> filteredCriminals = _criminals;
-
-            filteredCriminals = filteredCriminals.Where(criminal => criminal.isImprisoned == false);
-
-            if (height != 0)
-            {
-                filteredCriminals = filteredCriminals.Where(criminal => criminal.Height == height);
-            }
-            if (weight != 0)
-            {
-                filteredCriminals = filteredCriminals.Where(criminal => criminal.Weight == weight);
-            }
-            if (string.IsNullOrEmpty(nation) == false)
-            {
-                filteredCriminals = filteredCriminals.Where(criminal => criminal.Nationality.ToLower() == nation.ToLower());
-            }
+            IEnumerable<Criminal> filteredCriminals = _criminals.Where(criminal => criminal.isImprisoned == false && criminal.Height == height && criminal.Weight == weight && criminal.Nationality.ToLower() == nation.ToLower());
 
             WriteLine("\nРезультат запроса:");
 
             if (filteredCriminals.Any())
             {
                 foreach (var criminal in filteredCriminals)
-            {
-                WriteLine($"{criminal.Name}, {criminal.Nationality}, Рост {criminal.Height}, Вес {criminal.Weight}");
-            }
+                {
+                    WriteLine($"{criminal.Name}, {criminal.Nationality}, Рост {criminal.Height}, Вес {criminal.Weight}");
+                }
             }
             else
             {
                 WriteLine("Ничего не найдено");
             }
-
         }
 
         private int GetHeight()
